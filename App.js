@@ -1,9 +1,77 @@
-import { Text, View, TouchableOpacity, ImageBackground } from "react-native";
+import "react-native-gesture-handler";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ImageBackground,
+  Button,
+} from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import styled from "styled-components/native";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import Logo from "./assets/logo.svg";
 import backGradient from "./assets/backGradient.png";
+import CanalsIcon from "./assets/canals.svg";
+import ProfileIcon from "./assets/profile.svg";
+import SearchIcon from "./assets/search.svg";
+
+import Canals from "./pages/canalsStack/canals";
+import Profile from "./pages/profileStack/profile";
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function CanalsStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Canals"
+      screenOptions={{
+        headerStyle: { backgroundColor: "#121212" },
+        headerTintColor: "#fff",
+        headerTitleStyle: { fontWeight: "bold" },
+        headerTitleAlign: "center",
+        headerShadowVisible: false,
+        headerRight: (props) => (
+          <SearchIcon
+            {...props}
+            style={{ marginRight: 24 }}
+            onPress={() => {
+              // Do something
+            }}
+          />
+        ),
+      }}
+    >
+      <Stack.Screen
+        name="Canals"
+        component={Canals}
+        options={{ title: "Каналы" }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Profile"
+      screenOptions={{
+        headerStyle: { backgroundColor: "#42f44b" },
+        headerTintColor: "#fff",
+        headerTitleStyle: { fontWeight: "bold" },
+      }}
+    >
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ title: "Профиль" }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 const Container = styled(ImageBackground)`
   flex: 1;
@@ -71,51 +139,81 @@ export default function App() {
   }
 
   return (
-    <Container source={backGradient} resizeMode="cover">
-      <StatusBar style="auto" />
-      <LogoContainer>
-        <Slogan>Добро пожаловать в</Slogan>
-        <Logo />
-      </LogoContainer>
-      <View>
-        <ButtonContainer bgColor="#fff" mrgTop="0">
-          <TextContainer color="#35353a">
-            Войти по номеру телефона
-          </TextContainer>
-        </ButtonContainer>
-        <ButtonContainer bgColor="#fff" mrgTop="8px">
-          <TextContainer color="#9f9fb7">
-            Войти через <Google color="#4285f4">G</Google>
-            <Google color="#eb4335">o</Google>
-            <Google color="#fbbc05">o</Google>
-            <Google color="#4285f4">g</Google>
-            <Google color="#34a853">l</Google>
-            <Google color="#eb4335">e</Google>
-          </TextContainer>
-        </ButtonContainer>
-        <ButtonContainer bgColor="#0085ff" mrgTop="8px">
-          <TextContainer color="#fff">Войти по VK ID</TextContainer>
-        </ButtonContainer>
-        <ButtonContainer bgColor="#35353a" mrgTop="8px">
-          <TextContainer color="#fff">Войти с Apple ID</TextContainer>
-        </ButtonContainer>
-        <Text
-          style={{
-            fontFamily: "TTCommons",
-            marginTop: 16,
-            marginBottom: 16,
-            textAlign: "center",
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="Feed"
+        screenOptions={{
+          activeTintColor: "#42f44b",
+          headerShown: false,
+        }}
+      >
+        <Tab.Screen
+          name="CanalsStack"
+          component={CanalsStack}
+          options={{
+            tabBarLabel: "Каналы",
+            tabBarIcon: ({ color, size }) => (
+              <CanalsIcon color={color} size={size} />
+            ),
           }}
-        >
-          или
-        </Text>
-        <ButtonContainer bgColor="#7a7ad0" mrgTop="0">
-          <TextContainer color="#fff">Зарегистрироваться</TextContainer>
-        </ButtonContainer>
-        <SubText>
-          Уже есть аккаунт? <Text style={{ color: "#7a7ad0" }}>Войти</Text>
-        </SubText>
-      </View>
-    </Container>
+        />
+        <Tab.Screen
+          name="ProfileStack"
+          component={ProfileStack}
+          options={{
+            tabBarLabel: "Профиль",
+            tabBarIcon: ({ color, size }) => (
+              <ProfileIcon color={color} size={size} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+    // <Container source={backGradient} resizeMode="cover">
+    //   <StatusBar style="auto" />
+    //   <LogoContainer>
+    //     <Slogan>Добро пожаловать в</Slogan>
+    //     <Logo />
+    //   </LogoContainer>
+    //   <View>
+    //     <ButtonContainer bgColor="#fff" mrgTop="0">
+    //       <TextContainer color="#35353a">
+    //         Войти по номеру телефона
+    //       </TextContainer>
+    //     </ButtonContainer>
+    //     <ButtonContainer bgColor="#fff" mrgTop="8px">
+    //       <TextContainer color="#9f9fb7">
+    //         Войти через <Google color="#4285f4">G</Google>
+    //         <Google color="#eb4335">o</Google>
+    //         <Google color="#fbbc05">o</Google>
+    //         <Google color="#4285f4">g</Google>
+    //         <Google color="#34a853">l</Google>
+    //         <Google color="#eb4335">e</Google>
+    //       </TextContainer>
+    //     </ButtonContainer>
+    //     <ButtonContainer bgColor="#0085ff" mrgTop="8px">
+    //       <TextContainer color="#fff">Войти по VK ID</TextContainer>
+    //     </ButtonContainer>
+    //     <ButtonContainer bgColor="#35353a" mrgTop="8px">
+    //       <TextContainer color="#fff">Войти с Apple ID</TextContainer>
+    //     </ButtonContainer>
+    //     <Text
+    //       style={{
+    //         fontFamily: "TTCommons",
+    //         marginTop: 16,
+    //         marginBottom: 16,
+    //         textAlign: "center",
+    //       }}
+    //     >
+    //       или
+    //     </Text>
+    //     <ButtonContainer bgColor="#7a7ad0" mrgTop="0">
+    //       <TextContainer color="#fff">Зарегистрироваться</TextContainer>
+    //     </ButtonContainer>
+    //     <SubText>
+    //       Уже есть аккаунт? <Text style={{ color: "#7a7ad0" }}>Войти</Text>
+    //     </SubText>
+    //   </View>
+    // </Container>
   );
 }
