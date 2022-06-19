@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   Text,
@@ -11,7 +12,7 @@ import {
 import styled from "styled-components/native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Arrow from "../../assets/arrow-right.svg";
-import { mySelf, subscribes, favorites } from "../../staticData";
+import { AppContext } from "../../appContext";
 
 const Title = styled(Text)`
   font-family: "TTCommons";
@@ -34,17 +35,21 @@ const Card = styled(ImageBackground)`
 `;
 
 const Canals = () => {
+  const { check, userData, subscribes, favorites } = useContext(AppContext);
   const navigation = useNavigation();
   const tabBarHeight = useBottomTabBarHeight();
 
   return (
     <ScrollView style={{ flex: 1 }}>
-      {mySelf.map((item) => {
-        const { name, online, mark, image, id } = item;
+      {userData.map((item) => {
+        const { name, image, id } = item;
+
         return (
           <TouchableOpacity
             key={id}
-            onPress={() => navigation.navigate("CanalsSlug", { id })}
+            onPress={() =>
+              navigation.navigate("CanalsSlug", { data: item, check })
+            }
           >
             <Card
               source={require("../../assets/myself-background-card.png")}
@@ -73,10 +78,12 @@ const Canals = () => {
                         height: 8,
                         marginRight: 8,
                         borderRadius: 8,
-                        backgroundColor: mark ? "#30d158" : "#7f7d85",
+                        backgroundColor: check ? "#30d158" : "#7f7d85",
                       }}
                     />
-                    <Text style={{ color: "#7f7d85" }}>{online}</Text>
+                    <Text style={{ color: "#7f7d85" }}>
+                      {check ? "Вы" : ""}
+                    </Text>
                   </View>
                 </View>
                 <Arrow />
@@ -87,10 +94,13 @@ const Canals = () => {
       })}
       <Title>Подписки</Title>
       {subscribes.map((item) => {
-        const { name, online, mark, image, newTracks, id } = item;
+        const { name, online, image, newTracks, id } = item;
 
         return (
-          <TouchableOpacity key={id}>
+          <TouchableOpacity
+            key={id}
+            onPress={() => navigation.navigate("CanalsSlug", { data: item })}
+          >
             <Card
               source={require("../../assets/subscribes-background-card.png")}
               resizeMode="stretch"
@@ -118,7 +128,8 @@ const Canals = () => {
                         height: 8,
                         marginRight: 8,
                         borderRadius: 8,
-                        backgroundColor: mark ? "#30d158" : "#7f7d85",
+                        backgroundColor:
+                          online === "online" ? "#30d158" : "#7f7d85",
                       }}
                     />
                     <Text style={{ color: "#7f7d85" }}>{online}</Text>

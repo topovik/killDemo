@@ -4,7 +4,9 @@ import {
   View,
   TouchableOpacity,
   ImageBackground,
+  Image,
   Button,
+  StyleSheet,
 } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -23,7 +25,11 @@ import SearchIcon from "./assets/search.svg";
 
 import Canals from "./pages/canalsStack/canals";
 import CanalsSlug from "./pages/canalsStack/canalsSlug";
+import Publication from "./pages/canalsStack/publication";
 import Profile from "./pages/profileStack/profile";
+
+import { mySelf as users } from "./staticData";
+import { AppContext } from "./appContext";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,6 +52,7 @@ function CanalsStack() {
         headerTitleStyle: { fontWeight: "bold" },
         headerTitleAlign: "center",
         headerShadowVisible: false,
+        headerBackTitleVisible: false,
       }}
     >
       <Stack.Screen
@@ -73,6 +80,19 @@ function CanalsStack() {
           headerTitleStyle: { display: "none" },
         }}
       />
+      <Stack.Screen
+        name="Publication"
+        component={Publication}
+        options={({ route }) => {
+          return {
+            title: route.params.data.artist,
+            presentation: "card",
+            headerBackgroundContainerStyle: {
+              backgroundColor: "#121212",
+            },
+          };
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -87,6 +107,7 @@ function AddStack() {
         headerTitleStyle: { fontWeight: "bold" },
         headerTitleAlign: "center",
         headerShadowVisible: false,
+        headerBackTitleVisible: false,
         headerRight: (props) => (
           <SearchIcon
             {...props}
@@ -115,6 +136,7 @@ function ProfileStack() {
         headerStyle: { backgroundColor: "#42f44b" },
         headerTintColor: "#fff",
         headerTitleStyle: { fontWeight: "bold" },
+        headerBackTitleVisible: false,
       }}
     >
       <Stack.Screen
@@ -191,150 +213,183 @@ export default function App() {
     return null;
   }
 
+  const selfID = 2;
+  const userData = users.filter((item) => item.id === selfID);
+  const check = !!userData.length;
+
+  let subscribes = [];
+  let favorites = [];
+
+  for (const item of users) {
+    if (
+      userData[0].subscribes.includes(item.id) &&
+      userData[0].id !== item.id
+    ) {
+      subscribes.push(item);
+    }
+  }
+
+  for (const item of users) {
+    for (const item2 of item.publications) {
+      if (userData[0].favorites.includes(item2.id)) {
+        favorites.push(item2);
+      }
+    }
+  }
+
   return (
-    <ImageBackground
-      style={{ flex: 1 }}
-      source={require("./assets/background.png")}
-      resizeMode="stretch"
+    <AppContext.Provider
+      value={{
+        check,
+        userData,
+        subscribes,
+        favorites,
+      }}
     >
-      <NavigationContainer theme={MyTheme}>
-        <Tab.Navigator
-          initialRouteName="Feed"
-          screenOptions={{
-            tabBarShowLabel: false,
-            headerShown: false,
-            tabBarStyle: {
-              position: "absolute",
-              height: 100,
-              elevation: 0,
-              borderTopWidth: 0,
-              backgroundColor: "#030102",
-              borderTopLeftRadius: 32,
-              borderTopRightRadius: 32,
-            },
-            tabBarItemStyle: {
-              flex: 1,
-              height: "100%",
-            },
-          }}
-        >
-          <Tab.Screen
-            name="CanalsStack"
-            component={CanalsStack}
-            options={{
-              tabBarIcon: ({ focused }) => {
-                return (
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {focused ? (
-                      <CanalsIconActive
-                        style={{
-                          shadowColor: "rgba(255, 0, 0, 1)",
-                          shadowOffset: {
-                            width: 0,
-                            height: 4,
-                          },
-                          shadowOpacity: 0.8,
-                          shadowRadius: 8,
-                          elevation: 12,
-                        }}
-                      />
-                    ) : (
-                      <CanalsIconDefault />
-                    )}
-                    <Text
+      <ImageBackground
+        style={{ flex: 1 }}
+        source={require("./assets/background.png")}
+        resizeMode="stretch"
+      >
+        <NavigationContainer theme={MyTheme}>
+          <Tab.Navigator
+            initialRouteName="Feed"
+            screenOptions={{
+              tabBarShowLabel: false,
+              headerShown: false,
+              tabBarStyle: {
+                position: "absolute",
+                height: 100,
+                elevation: 0,
+                borderTopWidth: 0,
+                backgroundColor: "#030102",
+                borderTopLeftRadius: 32,
+                borderTopRightRadius: 32,
+              },
+              tabBarItemStyle: {
+                flex: 1,
+                height: "100%",
+              },
+            }}
+          >
+            <Tab.Screen
+              name="CanalsStack"
+              component={CanalsStack}
+              options={{
+                tabBarIcon: ({ focused }) => {
+                  return (
+                    <View
                       style={{
-                        marginTop: 8,
-                        color: focused ? "#ffffff" : "#7f7d85",
+                        flex: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      Каналы
-                    </Text>
-                  </View>
-                );
-              },
-            }}
-          />
-          <Tab.Screen
-            name="AddStack"
-            component={AddStack}
-            options={{
-              tabBarIcon: () => {
-                return (
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      flexDirection: "row",
-                      width: 50,
-                      height: 50,
-                      backgroundColor: "#ff453a",
-                      borderRadius: 23,
-                      shadowColor: "rgba(255, 0, 0, 1)",
-                      shadowOffset: {
-                        width: 0,
-                        height: 4,
-                      },
-                      shadowOpacity: 0.8,
-                      shadowRadius: 8,
-                      elevation: 12,
-                    }}
-                  >
-                    <PlusIcon style={{ flex: 1, alignSelf: "center" }} />
-                  </View>
-                );
-              },
-            }}
-          />
-          <Tab.Screen
-            name="ProfileStack"
-            component={ProfileStack}
-            options={{
-              tabBarIcon: ({ focused }) => {
-                return (
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {focused ? (
-                      <ProfileIconActive
+                      {focused ? (
+                        <CanalsIconActive
+                          style={{
+                            shadowColor: "rgba(255, 0, 0, 1)",
+                            shadowOffset: {
+                              width: 0,
+                              height: 4,
+                            },
+                            shadowOpacity: 0.8,
+                            shadowRadius: 8,
+                            elevation: 12,
+                          }}
+                        />
+                      ) : (
+                        <CanalsIconDefault />
+                      )}
+                      <Text
                         style={{
-                          shadowColor: "rgba(255, 0, 0, 1)",
-                          shadowOffset: {
-                            width: 0,
-                            height: 4,
-                          },
-                          shadowOpacity: 0.8,
-                          shadowRadius: 8,
-                          elevation: 12,
+                          marginTop: 8,
+                          color: focused ? "#ffffff" : "#7f7d85",
                         }}
-                      />
-                    ) : (
-                      <ProfileIconDefault />
-                    )}
-                    <Text
+                      >
+                        Каналы
+                      </Text>
+                    </View>
+                  );
+                },
+              }}
+            />
+            <Tab.Screen
+              name="AddStack"
+              component={AddStack}
+              options={{
+                tabBarIcon: () => {
+                  return (
+                    <View
                       style={{
-                        marginTop: 8,
-                        color: focused ? "#ffffff" : "#7f7d85",
+                        justifyContent: "center",
+                        flexDirection: "row",
+                        width: 50,
+                        height: 50,
+                        backgroundColor: "#ff453a",
+                        borderRadius: 23,
+                        shadowColor: "rgba(255, 0, 0, 1)",
+                        shadowOffset: {
+                          width: 0,
+                          height: 4,
+                        },
+                        shadowOpacity: 0.8,
+                        shadowRadius: 8,
+                        elevation: 12,
                       }}
                     >
-                      Профиль
-                    </Text>
-                  </View>
-                );
-              },
-            }}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </ImageBackground>
+                      <PlusIcon style={{ flex: 1, alignSelf: "center" }} />
+                    </View>
+                  );
+                },
+              }}
+            />
+            <Tab.Screen
+              name="ProfileStack"
+              component={ProfileStack}
+              options={{
+                tabBarIcon: ({ focused }) => {
+                  return (
+                    <View
+                      style={{
+                        flex: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {focused ? (
+                        <ProfileIconActive
+                          style={{
+                            shadowColor: "rgba(255, 0, 0, 1)",
+                            shadowOffset: {
+                              width: 0,
+                              height: 4,
+                            },
+                            shadowOpacity: 0.8,
+                            shadowRadius: 8,
+                            elevation: 12,
+                          }}
+                        />
+                      ) : (
+                        <ProfileIconDefault />
+                      )}
+                      <Text
+                        style={{
+                          marginTop: 8,
+                          color: focused ? "#ffffff" : "#7f7d85",
+                        }}
+                      >
+                        Профиль
+                      </Text>
+                    </View>
+                  );
+                },
+              }}
+            />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </ImageBackground>
+    </AppContext.Provider>
     // <Container source={backGradient} resizeMode="cover">
     //   <StatusBar style="auto" />
     //   <LogoContainer>
