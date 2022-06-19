@@ -22,6 +22,7 @@ import ProfileIconActive from "./assets/profileIconActive.svg";
 import SearchIcon from "./assets/search.svg";
 
 import Canals from "./pages/canalsStack/canals";
+import CanalsSlug from "./pages/canalsStack/canalsSlug";
 import Profile from "./pages/profileStack/profile";
 
 const Stack = createStackNavigator();
@@ -45,21 +46,32 @@ function CanalsStack() {
         headerTitleStyle: { fontWeight: "bold" },
         headerTitleAlign: "center",
         headerShadowVisible: false,
-        headerRight: (props) => (
-          <SearchIcon
-            {...props}
-            style={{ marginRight: 24 }}
-            onPress={() => {
-              // Do something
-            }}
-          />
-        ),
       }}
     >
       <Stack.Screen
         name="Canals"
         component={Canals}
-        options={{ title: "Каналы" }}
+        options={{
+          title: "Каналы",
+          headerRight: (props) => (
+            <SearchIcon
+              {...props}
+              style={{ marginRight: 24 }}
+              onPress={() => {
+                // Do something
+              }}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="CanalsSlug"
+        component={CanalsSlug}
+        options={{
+          title: "Каналы",
+          headerTransparent: true,
+          headerTitleStyle: { display: "none" },
+        }}
       />
     </Stack.Navigator>
   );
@@ -313,7 +325,7 @@ export default function App() {
                         color: focused ? "#ffffff" : "#7f7d85",
                       }}
                     >
-                      Каналы
+                      Профиль
                     </Text>
                   </View>
                 );
