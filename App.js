@@ -1,21 +1,9 @@
 import "react-native-gesture-handler";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  Button,
-  StyleSheet,
-} from "react-native";
+import { Text, View, ImageBackground } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import styled from "styled-components/native";
 import { useFonts } from "expo-font";
-import { StatusBar } from "expo-status-bar";
-import Logo from "./assets/logo.svg";
-import backGradient2 from "./assets/backGradient.png";
 import PlusIcon from "./assets/plus.svg";
 import CanalsIconDefault from "./assets/canalsIconDefault.svg";
 import CanalsIconActive from "./assets/canalsIconActive.svg";
@@ -26,7 +14,15 @@ import SearchIcon from "./assets/search.svg";
 import Canals from "./pages/canalsStack/canals";
 import CanalsSlug from "./pages/canalsStack/canalsSlug";
 import Publication from "./pages/canalsStack/publication";
+import CanalsPreview from "./pages/canalsStack/canalsPreview";
+import CanalsPreviewArtist from "./pages/canalsStack/canalsPreviewArtist";
+
 import Profile from "./pages/profileStack/profile";
+
+import Auth from "./pages/regStack/auth";
+import SigninPhone from "./pages/regStack/signinPhone";
+import ConfirmSms from "./pages/regStack/confirmSms";
+import SetName from "./pages/regStack/setName";
 
 import { mySelf as users } from "./staticData";
 import { AppContext } from "./appContext";
@@ -42,10 +38,10 @@ const MyTheme = {
   },
 };
 
-function CanalsStack() {
+function AuthStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Canals"
+      initialRouteName="SigninPhone"
       screenOptions={{
         headerStyle: { backgroundColor: "transparent" },
         headerTintColor: "#fff",
@@ -55,6 +51,78 @@ function CanalsStack() {
         headerBackTitleVisible: false,
       }}
     >
+      <Stack.Screen
+        name="Auth"
+        component={Auth}
+        options={{
+          title: "Каналы",
+          headerTransparent: true,
+          headerTitleStyle: { display: "none" },
+        }}
+      />
+      <Stack.Screen
+        name="SigninPhone"
+        component={SigninPhone}
+        options={{
+          title: "Вход",
+        }}
+      />
+      <Stack.Screen
+        name="ConfirmSms"
+        component={ConfirmSms}
+        options={{
+          title: "Вход",
+        }}
+      />
+      <Stack.Screen
+        name="SetName"
+        component={SetName}
+        options={{
+          title: "Вход",
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function CanalsStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="CanalsPreviewArtist"
+      screenOptions={{
+        headerStyle: { backgroundColor: "transparent" },
+        headerTintColor: "#fff",
+        headerTitleStyle: { fontWeight: "bold" },
+        headerTitleAlign: "center",
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+      }}
+    >
+      <Stack.Screen
+        name="CanalsPreview"
+        component={CanalsPreview}
+        options={{
+          title: "Каналы",
+          headerRight: (props) => (
+            <SearchIcon
+              {...props}
+              style={{ marginRight: 24 }}
+              onPress={() => {
+                // Do something
+              }}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="CanalsPreviewArtist"
+        component={CanalsPreviewArtist}
+        options={{
+          title: "Каналы",
+          headerTransparent: true,
+          headerTitleStyle: { display: "none" },
+        }}
+      />
       <Stack.Screen
         name="Canals"
         component={Canals}
@@ -148,62 +216,6 @@ function ProfileStack() {
   );
 }
 
-const Container = styled(ImageBackground)`
-  flex: 1;
-  row-gap: 1rem;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-`;
-
-const LogoContainer = styled.View`
-  margin-bottom: 64px;
-`;
-
-const Slogan = styled.Text`
-  font-family: "TTCommons";
-  font-size: 14px;
-  color: #35353a;
-  text-align: center;
-  font-weight: 600;
-  line-height: 16px;
-`;
-
-const ButtonContainer = styled(TouchableOpacity)`
-  flex-direction: row;
-  width: 343px;
-  height: 60px;
-  margin-top: ${({ mrgTop }) => mrgTop};
-  background-color: ${({ bgColor }) => bgColor};
-  border-radius: 22px;
-`;
-
-const TextContainer = styled(Text)`
-  font-family: "TTCommons";
-  align-self: center;
-  width: 100%;
-  color: ${({ color }) => color};
-  font-size: 20px;
-  line-height: 23px;
-  text-align: center;
-  letter-spacing: -0.48px;
-`;
-
-const Google = styled(Text)`
-  color: ${({ color }) => color};
-`;
-
-const SubText = styled(Text)`
-  font-family: "TTCommons";
-  margin-top: 16px;
-  font-size: 20px;
-  color: #35353a;
-  font-weight: 400;
-  text-align: center;
-  line-height: 23px;
-  letter-spacing: -0.048px;
-`;
-
 export default function App() {
   let [fontsLoaded] = useFonts({
     TTCommons: require("./assets/fonts/TTCommons-Medium.ttf"),
@@ -257,6 +269,7 @@ export default function App() {
             screenOptions={{
               tabBarShowLabel: false,
               headerShown: false,
+              tabBarHideOnKeyboard: true,
               tabBarStyle: {
                 position: "absolute",
                 height: 100,
@@ -276,6 +289,7 @@ export default function App() {
               name="CanalsStack"
               component={CanalsStack}
               options={{
+                // tabBarStyle: { display: "none" }, //hide tabbar
                 tabBarIcon: ({ focused }) => {
                   return (
                     <View
@@ -390,51 +404,5 @@ export default function App() {
         </NavigationContainer>
       </ImageBackground>
     </AppContext.Provider>
-    // <Container source={backGradient} resizeMode="cover">
-    //   <StatusBar style="auto" />
-    //   <LogoContainer>
-    //     <Slogan>Добро пожаловать в</Slogan>
-    //     <Logo />
-    //   </LogoContainer>
-    //   <View>
-    //     <ButtonContainer bgColor="#fff" mrgTop="0">
-    //       <TextContainer color="#35353a">
-    //         Войти по номеру телефона
-    //       </TextContainer>
-    //     </ButtonContainer>
-    //     <ButtonContainer bgColor="#fff" mrgTop="8px">
-    //       <TextContainer color="#9f9fb7">
-    //         Войти через <Google color="#4285f4">G</Google>
-    //         <Google color="#eb4335">o</Google>
-    //         <Google color="#fbbc05">o</Google>
-    //         <Google color="#4285f4">g</Google>
-    //         <Google color="#34a853">l</Google>
-    //         <Google color="#eb4335">e</Google>
-    //       </TextContainer>
-    //     </ButtonContainer>
-    //     <ButtonContainer bgColor="#0085ff" mrgTop="8px">
-    //       <TextContainer color="#fff">Войти по VK ID</TextContainer>
-    //     </ButtonContainer>
-    //     <ButtonContainer bgColor="#35353a" mrgTop="8px">
-    //       <TextContainer color="#fff">Войти с Apple ID</TextContainer>
-    //     </ButtonContainer>
-    //     <Text
-    //       style={{
-    //         fontFamily: "TTCommons",
-    //         marginTop: 16,
-    //         marginBottom: 16,
-    //         textAlign: "center",
-    //       }}
-    //     >
-    //       или
-    //     </Text>
-    //     <ButtonContainer bgColor="#7a7ad0" mrgTop="0">
-    //       <TextContainer color="#fff">Зарегистрироваться</TextContainer>
-    //     </ButtonContainer>
-    //     <SubText>
-    //       Уже есть аккаунт? <Text style={{ color: "#7a7ad0" }}>Войти</Text>
-    //     </SubText>
-    //   </View>
-    // </Container>
   );
 }
