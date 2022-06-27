@@ -21,7 +21,7 @@ export default function App() {
   let [fontsLoaded] = useFonts({
     TTCommons: require("./assets/fonts/TTCommons-Medium.ttf"),
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   if (!fontsLoaded) {
     return null;

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@expo/webpack-config": "~0.16.2",
+    "@react-native-picker/picker": "^2.4.2",
     "@react-navigation/bottom-tabs": "^6.3.1",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/stack": "^6.2.1",
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@types/react-native": "^0.69.1",
     "react-native-svg-transformer": "^1.0.0"
   },
   "private": true

@@ -1,15 +1,15 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { Main } from "../../../screens/add";
+import { Main, Prevent } from "../../../screens/add";
 
 const Stack = createStackNavigator();
 
 export function AddStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Main"
+      initialRouteName="Prevent"
       screenOptions={{
         headerStyle: { backgroundColor: "transparent" },
-        // headerTintColor: "#ffffff",
+        headerTintColor: "#ffffff",
         headerTitleStyle: { fontWeight: "bold" },
         headerTitleAlign: "center",
         headerShadowVisible: false,
@@ -17,9 +17,14 @@ export function AddStack() {
       }}
     >
       <Stack.Screen
+        name="Prevent"
+        component={Prevent}
+        options={{ title: "Новая публикация" }}
+      />
+      <Stack.Screen
         name="Main"
         component={Main}
-        options={{ title: "Каналы" }}
+        options={{ title: "Новая публикация" }}
       />
     </Stack.Navigator>
   );
