@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { Tabs } from "react-native-collapsible-tab-view";
 import { useNavigation } from "@react-navigation/native";
 import styled from "styled-components/native";
@@ -6,10 +7,11 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import get from "lodash/get";
-import Header from "../../components/canals_slug/header";
-import FilterIcon from "../../assets/filterIcon.svg";
-import Publication from "../../components/canals_slug/publication";
+import Header from "../../../components/canals_slug/header";
+import FilterIcon from "../../../assets/filterIcon.svg";
+import Publication from "../../../components/canals_slug/publication";
 
 const TabStyle = styled(Animated.Text)`
   font-family: "TTCommons";
@@ -29,12 +31,24 @@ const Seporator = styled(View)`
   background-color: rgba(80, 77, 82, 0.5);
 `;
 
-const Example = ({ route }) => {
+const ITEM_HEIGHT = 100;
+
+const Canal = ({ route }) => {
   const navigation = useNavigation();
+  const tabBarHeight = useBottomTabBarHeight();
   const { data, check } = route.params;
 
   const publishedItems = data.publications.filter((item) => item.published);
   const unPublishedItems = data.publications.filter((item) => !item.published);
+
+  const getItemLayout = useCallback(
+    (data, index) => ({
+      length: ITEM_HEIGHT,
+      offset: ITEM_HEIGHT * index,
+      index,
+    }),
+    []
+  );
 
   return (
     <Tabs.Container
@@ -105,9 +119,11 @@ const Example = ({ route }) => {
               />
             );
           }}
+          getItemLayout={getItemLayout}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <Seporator />}
           style={{ marginTop: 16 }}
+          contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
         />
       </Tabs.Tab>
       {check && (
@@ -126,9 +142,11 @@ const Example = ({ route }) => {
                 />
               );
             }}
+            getItemLayout={getItemLayout}
             showsVerticalScrollIndicator={false}
             ItemSeparatorComponent={() => <Seporator />}
             style={{ marginTop: 16 }}
+            contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
           />
         </Tabs.Tab>
       )}
@@ -136,4 +154,4 @@ const Example = ({ route }) => {
   );
 };
 
-export default Example;
+export default Canal;

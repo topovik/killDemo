@@ -10,11 +10,11 @@ import {
 import styled from "styled-components/native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import size from "lodash/size";
-import PlayIcon from "../../assets/playIcon.svg";
-import MoreIcon from "../../assets/moreIcon.svg";
-import ActiveIcon from "../../assets/favoriteIconActive.svg";
-import DisactiveIcon from "../../assets/favoriteIconDisactive.svg";
-import CommentsIcon from "../../assets/commentsIcon.svg";
+import PlayIcon from "../../../assets/playIcon.svg";
+import MoreIcon from "../../../assets/moreIcon.svg";
+import ActiveIcon from "../../../assets/favoriteIconActive.svg";
+import DisactiveIcon from "../../../assets/favoriteIconDisactive.svg";
+import CommentsIcon from "../../../assets/commentsIcon.svg";
 
 const Card = styled(ImageBackground)`
   flex: 1;
@@ -72,7 +72,7 @@ const Online = styled(Text)`
   color: #504d52;
 `;
 
-const Publication = ({ route }) => {
+const Product = ({ route }) => {
   const tabBarHeight = useBottomTabBarHeight();
   const {
     name,
@@ -119,6 +119,7 @@ const Publication = ({ route }) => {
           flexDirection: "row",
           justifyContent: "space-between",
           margin: 16,
+          paddingBottom: tabBarHeight,
         }}
       >
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
@@ -157,9 +158,8 @@ const Publication = ({ route }) => {
         </View>
         <Online>{check || online === "online" ? "Онлайн" : online}</Online>
       </View>
-      <View style={{ height: tabBarHeight + 24 }} />
     </ScrollView>
   );
 };
 
-export default Publication;
+export default Product;

@@ -52,7 +52,7 @@ const Publication = (data) => {
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("Publication", {
+        navigation.navigate("Product", {
           data: { ...data.item, artist, online, check },
         })
       }

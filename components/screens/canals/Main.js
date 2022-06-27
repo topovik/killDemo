@@ -11,8 +11,8 @@ import {
 } from "react-native";
 import styled from "styled-components/native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import Arrow from "../../assets/arrow-right.svg";
-import { AppContext } from "../../appContext";
+import Arrow from "../../../assets/arrow-right.svg";
+import { AppContext } from "../../../appContext";
 
 const Title = styled(Text)`
   font-family: "TTCommons";
@@ -34,7 +34,7 @@ const Card = styled(ImageBackground)`
   border-radius: 22px;
 `;
 
-const Canals = () => {
+const Main = () => {
   const { check, userData, subscribes, favorites } = useContext(AppContext);
   const navigation = useNavigation();
   const tabBarHeight = useBottomTabBarHeight();
@@ -47,12 +47,10 @@ const Canals = () => {
         return (
           <TouchableOpacity
             key={id}
-            onPress={() =>
-              navigation.navigate("CanalsSlug", { data: item, check })
-            }
+            onPress={() => navigation.navigate("Canal", { data: item, check })}
           >
             <Card
-              source={require("../../assets/myself-background-card.png")}
+              source={require("../../../assets/myself-background-card.png")}
               resizeMode="stretch"
             >
               <Image
@@ -99,10 +97,10 @@ const Canals = () => {
         return (
           <TouchableOpacity
             key={id}
-            onPress={() => navigation.navigate("CanalsSlug", { data: item })}
+            onPress={() => navigation.navigate("Canal", { data: item })}
           >
             <Card
-              source={require("../../assets/subscribes-background-card.png")}
+              source={require("../../../assets/subscribes-background-card.png")}
               resizeMode="stretch"
               key={id}
             >
@@ -177,7 +175,7 @@ const Canals = () => {
         <Title style={{ marginBottom: 12 }}>Избранное</Title>
         <Title style={{ marginRight: 16, color: "#7f7d85" }}>Все</Title>
       </View>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingBottom: tabBarHeight + 24 }}>
         <FlatList
           horizontal
           data={favorites}
@@ -188,26 +186,35 @@ const Canals = () => {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => {
-            const { name, image } = item;
+            const { name, image, artist, online } = item;
 
             return (
-              <View>
-                <Image
-                  source={{ uri: image }}
-                  style={{ width: 148, height: 148, borderRadius: 18 }}
-                />
-                <Text style={{ marginLeft: 8, marginTop: 8, color: "#ffffff" }}>
-                  {name}
-                </Text>
-              </View>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("Product", {
+                    data: { ...item, artist, online, check },
+                  })
+                }
+              >
+                <View>
+                  <Image
+                    source={{ uri: image }}
+                    style={{ width: 148, height: 148, borderRadius: 18 }}
+                  />
+                  <Text
+                    style={{ marginLeft: 8, marginTop: 8, color: "#ffffff" }}
+                  >
+                    {name}
+                  </Text>
+                </View>
+              </TouchableOpacity>
             );
           }}
           ItemSeparatorComponent={() => <View style={{ margin: 4 }} />}
         />
       </View>
-      <View style={{ height: tabBarHeight + 24 }} />
     </ScrollView>
   );
 };
 
-export default Canals;
+export default Main;

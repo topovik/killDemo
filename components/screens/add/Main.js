@@ -1,6 +1,6 @@
 import { Text, View, Image } from "react-native";
 
-const Profile = () => {
+const Main = () => {
   return (
     <View>
       <Text>Profile</Text>
@@ -8,4 +8,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Main;

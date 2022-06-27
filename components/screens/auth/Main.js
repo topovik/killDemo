@@ -1,7 +1,9 @@
 import { Text, View, TouchableOpacity, ImageBackground } from "react-native";
 import styled from "styled-components/native";
-import { StatusBar } from "expo-status-bar";
-import Logo from "../../assets/logo.svg";
+import { useNavigation } from "@react-navigation/native";
+import Logo from "../../../assets/logo.svg";
+import VK from "../../../assets/vkIcon.svg";
+import Apple from "../../../assets/apple.svg";
 
 const Container = styled(ImageBackground)`
   flex: 1;
@@ -18,7 +20,7 @@ const LogoContainer = styled.View`
 const Slogan = styled.Text`
   font-family: "TTCommons";
   font-size: 14px;
-  color: #fff;
+  color: #ffffff;
   text-align: center;
   font-weight: 600;
   line-height: 16px;
@@ -26,6 +28,8 @@ const Slogan = styled.Text`
 
 const ButtonContainer = styled(TouchableOpacity)`
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
   width: 343px;
   height: 60px;
   margin-top: ${({ mrgTop }) => mrgTop};
@@ -36,12 +40,12 @@ const ButtonContainer = styled(TouchableOpacity)`
 const TextContainer = styled(Text)`
   font-family: "TTCommons";
   align-self: center;
-  width: 100%;
   color: ${({ color }) => color};
   font-size: 20px;
   line-height: 23px;
   text-align: center;
   letter-spacing: -0.48px;
+  color: #ffffff;
 `;
 
 const Google = styled(Text)`
@@ -59,20 +63,25 @@ const SubText = styled(Text)`
   letter-spacing: -0.048px;
 `;
 
-const Login = () => {
+const Main = () => {
+  const navigation = useNavigation();
+
   return (
     <Container>
-      <StatusBar style="auto" />
       <LogoContainer>
         <Slogan>Добро пожаловать в</Slogan>
         <Logo />
       </LogoContainer>
       <View>
-        <ButtonContainer bgColor="#222023" mrgTop="0">
-          <TextContainer color="#fff">Войти по номеру телефона</TextContainer>
+        <ButtonContainer
+          bgColor="#222023"
+          mrgTop="0"
+          onPress={() => navigation.navigate("Signin")}
+        >
+          <TextContainer>Войти по номеру телефона</TextContainer>
         </ButtonContainer>
         <ButtonContainer bgColor="#222023" mrgTop="8px">
-          <TextContainer color="#fff">
+          <TextContainer>
             Войти через <Google color="#4285f4">G</Google>
             <Google color="#eb4335">o</Google>
             <Google color="#fbbc05">o</Google>
@@ -82,10 +91,12 @@ const Login = () => {
           </TextContainer>
         </ButtonContainer>
         <ButtonContainer bgColor="#0085ff" mrgTop="8px">
-          <TextContainer color="#fff">Войти по VK ID</TextContainer>
+          <VK style={{ marginRight: 16 }} />
+          <TextContainer>Войти с VK ID</TextContainer>
         </ButtonContainer>
         <ButtonContainer bgColor="#222023" mrgTop="8px">
-          <TextContainer color="#fff">Войти с Apple ID</TextContainer>
+          <Apple style={{ marginRight: 16 }} />
+          <TextContainer>Войти с Apple ID</TextContainer>
         </ButtonContainer>
         <Text
           style={{
@@ -98,8 +109,12 @@ const Login = () => {
         >
           или
         </Text>
-        <ButtonContainer bgColor="#7a7ad0" mrgTop="0">
-          <TextContainer color="#fff">Зарегистрироваться</TextContainer>
+        <ButtonContainer
+          bgColor="#7a7ad0"
+          mrgTop="0"
+          onPress={() => navigation.navigate("Signup")}
+        >
+          <TextContainer>Зарегистрироваться</TextContainer>
         </ButtonContainer>
         <SubText>
           Уже есть аккаунт? <Text style={{ color: "#5E5CE6" }}>Войти</Text>
@@ -109,4 +124,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Main;

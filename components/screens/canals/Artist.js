@@ -1,4 +1,3 @@
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import {
   Text,
   View,
@@ -6,7 +5,9 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import styled from "styled-components/native";
+import { useNavigation } from "@react-navigation/native";
 
 const ArtistName = styled(Text)`
   font-family: "TTCommons";
@@ -47,19 +48,20 @@ const Cost = styled(Text)`
   color: #ffffff;
 `;
 
-const CanalsPreviewArtist = () => {
+const Artist = () => {
   const tabBarHeight = useBottomTabBarHeight();
+  const navigation = useNavigation();
 
   return (
     <ImageBackground
       style={{ flex: 1, paddingHorizontal: 16 }}
-      source={require("../../assets/background-preview-artist.png")}
+      source={require("../../../assets/background-preview-artist.png")}
       resizeMode="stretch"
     >
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Image
           source={{
-            uri: "https://biogr.net/wp-content/uploads/2021/04/Screenshot_42-1.jpg",
+            uri: "https://i.ru-music.cc/img/artists/full/man-kaufman.png",
           }}
           style={{
             alignSelf: "center",
@@ -69,7 +71,7 @@ const CanalsPreviewArtist = () => {
             borderRadius: 60,
           }}
         />
-        <ArtistName>просто Лера</ArtistName>
+        <ArtistName>Man Kaufman</ArtistName>
         <CountPublications>24 публикации</CountPublications>
       </View>
       <View
@@ -90,6 +92,7 @@ const CanalsPreviewArtist = () => {
             backgroundColor: "#5e5ce6",
             borderRadius: 22,
           }}
+          onPress={() => navigation.navigate("Main")}
         >
           <ButtonText>Подписаться</ButtonText>
         </TouchableOpacity>
@@ -99,4 +102,4 @@ const CanalsPreviewArtist = () => {
   );
 };
 
-export default CanalsPreviewArtist;
+export default Artist;
