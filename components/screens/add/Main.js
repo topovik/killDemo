@@ -1,9 +1,22 @@
 import { useState, useRef } from "react";
-import { Text, TextInput, View, TouchableOpacity } from "react-native";
+import {
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Dimensions,
+} from "react-native";
 import styled from "styled-components/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Picker } from "@react-native-picker/picker";
+import ArrowUp from "../../../assets/arrow-up-select.svg";
+import ArrowDown from "../../../assets/arrow-down-select.svg";
+
+import DropDownPicker from "react-native-dropdown-picker";
+
+import ModalDropdown from "react-native-modal-dropdown";
 
 const Title = styled(Text)`
   font-family: "TTCommons";
@@ -45,8 +58,9 @@ const SubText = styled(Text)`
 `;
 
 const InputContainer = styled(View)`
-  width: 100%;
   position: relative;
+  width: 100%;
+  margin-top: 16px;
 `;
 
 const TextPlaceholder = styled(Text)`
@@ -79,34 +93,20 @@ const Input = styled(TextInput)`
 
 const Textarea = styled(TextInput)`
   width: 100%;
-  padding: 16px 24px 0;
+  padding: 24px 24px 0;
   background-color: #222023;
   border-radius: 22px;
 
   font-family: "TTCommons";
-  font-weight: 600;
   font-size: 20px;
   line-height: 23px;
   letter-spacing: -0.048px;
   color: #ffffff;
 `;
 
-const Select = styled(Picker)`
-  width: 100%;
-  font-family: "TTCommons";
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 23px;
-  letter-spacing: -0.048px;
-  color: #ffffff;
-`;
-
-const SelectContainer = styled(View)`
+const Select = styled(ModalDropdown)`
   width: 100%;
   height: 60px;
-  padding-left: 16px;
-  padding-top: 10px;
-  /* padding: 16px 24px 0; */
   background-color: #222023;
   border-radius: 22px;
   overflow: hidden;
@@ -117,6 +117,8 @@ const Main = () => {
   const titleRef = useRef();
   const yearRef = useRef();
   const versionRef = useRef();
+  const dropDownRef = useRef();
+
   const tabBarHeight = useBottomTabBarHeight();
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
@@ -124,6 +126,9 @@ const Main = () => {
   const [version, setVersion] = useState(undefined);
   const [photo, setPhoto] = useState("");
   const [sound, setSound] = useState("");
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
 
   return (
     <KeyboardAwareScrollView
@@ -146,11 +151,12 @@ const Main = () => {
           value={text}
           onChangeText={setText}
           multiline
-          numberOfLines={8}
+          numberOfLines={6}
+          editable
           placeholder="Текст публикации..."
           placeholderTextColor="#7f7d85"
           underlineColorAndroid="transparent"
-          style={{ marginBottom: 8 }}
+          style={{ textAlignVertical: "top" }}
         />
         <InputContainer>
           <TextPlaceholder>Название</TextPlaceholder>
@@ -166,24 +172,67 @@ const Main = () => {
           <TextPlaceholder>Год создания</TextPlaceholder>
           <Input
             ref={yearRef}
-            value={text}
+            value={year}
             onChangeText={setText}
             placeholder="Год записи песни"
             placeholderTextColor="#ffffff"
           />
         </InputContainer>
-        <SelectContainer>
+        <InputContainer>
           <TextPlaceholder>Версия</TextPlaceholder>
           <Select
-            selectedValue={version}
-            onValueChange={(itemValue) => setVersion(itemValue)}
-            dropdownIconColor="#fff"
-            itemStyle={{ backgroundColor: "grey", color: "blue",fontSize:17 }}
-          >
-            <Picker.Item label="Демо" value="demo" />
-            <Picker.Item label="Оригинал" value="original" />
-          </Select>
-        </SelectContainer>
+            ref={versionRef}
+            defaultValue="Версия трека"
+            options={[
+              "Демо",
+              "Оригинал",
+              "Измененная",
+              "Последняя",
+              "Версия 2.0",
+            ]}
+            onDropdownWillShow={() => setOpen(true)}
+            onDropdownWillHide={() => setOpen(false)}
+            showsVerticalScrollIndicator={false}
+            textStyle={{
+              height: "100%",
+              fontFamily: "TTCommons",
+              paddingTop: 26,
+              paddingBottom: "100%",
+              paddingLeft: 24,
+              fontSize: 20,
+              lineHeight: 23,
+              letterSpacing: -0.048,
+              color: "#fff",
+            }}
+            dropdownStyle={{
+              backgroundColor: "#424242",
+              borderWidth: 0,
+              borderTopLeftRadius: 22,
+              borderTopRightRadius: 22,
+              overflow: "hidden",
+            }}
+            adjustFrame={({ right, ...rest }) => {
+              return { ...rest, left: 0, right: 0, height: "40%", top: "60%" };
+            }}
+            dropdownTextStyle={{
+              fontFamily: "TTCommons",
+              paddingVertical: 16,
+              fontSize: 20,
+              lineHeight: 23,
+              textAlign: "center",
+              letterSpacing: -0.048,
+              backgroundColor: "#424242",
+              color: "#ffffff90",
+            }}
+            dropdownTextHighlightStyle={{ color: "#fff" }}
+            renderSeparator={() => null}
+          />
+          {open ? (
+            <ArrowUp style={{ position: "absolute", top: 25, right: 16 }} />
+          ) : (
+            <ArrowDown style={{ position: "absolute", top: 25, right: 16 }} />
+          )}
+        </InputContainer>
       </View>
     </KeyboardAwareScrollView>
   );

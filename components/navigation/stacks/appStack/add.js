@@ -6,7 +6,7 @@ const Stack = createStackNavigator();
 export function AddStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Prevent"
+      initialRouteName="Main"
       screenOptions={{
         headerStyle: { backgroundColor: "transparent" },
         headerTintColor: "#ffffff",

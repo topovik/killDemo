@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import { useState } from "react";
-import { ImageBackground } from "react-native";
+import { ImageBackground, StatusBar } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
@@ -21,7 +21,7 @@ export default function App() {
   let [fontsLoaded] = useFonts({
     TTCommons: require("./assets/fonts/TTCommons-Medium.ttf"),
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   if (!fontsLoaded) {
     return null;
@@ -66,6 +66,11 @@ export default function App() {
           source={require("./assets/background.png")}
           resizeMode="stretch"
         >
+          <StatusBar
+            barStyle="light-content"
+            translucent
+            backgroundColor="rgba(0,0,0,0)"
+          />
           <NavigationContainer theme={MyTheme}>
             <RootStack isLoggedIn={isLoggedIn} />
           </NavigationContainer>
