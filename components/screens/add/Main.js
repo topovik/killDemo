@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Text,
   TextInput,
   View,
+  Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
@@ -10,13 +11,18 @@ import {
 import styled from "styled-components/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
+
 import ArrowUp from "../../../assets/arrow-up-select.svg";
 import ArrowDown from "../../../assets/arrow-down-select.svg";
 
-import DropDownPicker from "react-native-dropdown-picker";
-
 import ModalDropdown from "react-native-modal-dropdown";
+import ImageView from "react-native-image-viewing";
+import CloseIcon from "../../../assets/closeIcon.svg";
+import PreviewIcon from "../../../assets/previewIcon.svg";
+
+import SimplePlayer from "../../../utils/simplePlayer";
 
 const Title = styled(Text)`
   font-family: "TTCommons";
@@ -124,11 +130,34 @@ const Main = () => {
   const [title, setTitle] = useState("");
   const [year, setYear] = useState("");
   const [version, setVersion] = useState(undefined);
-  const [photo, setPhoto] = useState("");
-  const [sound, setSound] = useState("");
+  const [photo, setPhoto] = useState(null);
+  const [track, setTrack] = useState({
+    name: null,
+    uri: null,
+  });
 
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(undefined);
+  const [visible, setIsVisible] = useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setPhoto(result.uri);
+    }
+  };
+
+  const pickTrack = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    const { name, uri } = result;
+    setTrack({ name, uri });
+  };
 
   return (
     <KeyboardAwareScrollView
@@ -140,12 +169,65 @@ const Main = () => {
       <View
         style={{
           flex: 1,
+          marginTop: 16,
           paddingHorizontal: 16,
           alignItems: "center",
-          justifyContent: "center",
           paddingBottom: tabBarHeight,
         }}
       >
+        {photo && (
+          <View
+            style={{
+              position: "relative",
+              width: "100%",
+              height: 186,
+              marginBottom: 16,
+              borderRadius: 22,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => setPhoto(null)}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "absolute",
+                top: 8,
+                right: 8,
+                zIndex: 1,
+                width: 24,
+                height: 24,
+                backgroundColor: "#121212",
+                borderRadius: 32,
+              }}
+            >
+              <CloseIcon style={{ width: 8, height: 8 }} />
+            </TouchableOpacity>
+            <Image
+              source={{ uri: photo }}
+              resizeMode="cover"
+              style={{
+                width: "100%",
+                height: 186,
+                borderRadius: 22,
+              }}
+            />
+            <TouchableOpacity onPress={() => setIsVisible(true)}>
+              <PreviewIcon
+                style={{
+                  position: "absolute",
+                  bottom: 16,
+                  right: 16,
+                  width: 16,
+                  height: 16,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {track.uri && <SimplePlayer track={track} />}
+
         <Textarea
           ref={textRef}
           value={text}
@@ -193,6 +275,7 @@ const Main = () => {
             onDropdownWillShow={() => setOpen(true)}
             onDropdownWillHide={() => setOpen(false)}
             showsVerticalScrollIndicator={false}
+            isFullWidth
             textStyle={{
               height: "100%",
               fontFamily: "TTCommons",
@@ -205,26 +288,28 @@ const Main = () => {
               color: "#fff",
             }}
             dropdownStyle={{
-              backgroundColor: "#424242",
+              backgroundColor: "#000",
               borderWidth: 0,
               borderTopLeftRadius: 22,
               borderTopRightRadius: 22,
               overflow: "hidden",
+              flexDirection: "row",
+              alignItems: "center",
             }}
             adjustFrame={({ right, ...rest }) => {
               return { ...rest, left: 0, right: 0, height: "40%", top: "60%" };
             }}
             dropdownTextStyle={{
               fontFamily: "TTCommons",
-              paddingVertical: 16,
+              paddingVertical: 12,
               fontSize: 20,
               lineHeight: 23,
               textAlign: "center",
               letterSpacing: -0.048,
-              backgroundColor: "#424242",
-              color: "#ffffff90",
+              backgroundColor: "transparent",
+              color: "#fff",
             }}
-            dropdownTextHighlightStyle={{ color: "#fff" }}
+            dropdownTextHighlightStyle={{ color: "#ff453a" }}
             renderSeparator={() => null}
           />
           {open ? (
@@ -233,6 +318,20 @@ const Main = () => {
             <ArrowDown style={{ position: "absolute", top: 25, right: 16 }} />
           )}
         </InputContainer>
+        <View>
+          <TouchableOpacity onPress={pickImage}>
+            <Text>Фото</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={pickTrack}>
+            <Text>Загрузить песню</Text>
+          </TouchableOpacity>
+        </View>
+        <ImageView
+          images={[{ uri: photo }]}
+          imageIndex={0}
+          visible={visible}
+          onRequestClose={() => setIsVisible(false)}
+        />
       </View>
     </KeyboardAwareScrollView>
   );
